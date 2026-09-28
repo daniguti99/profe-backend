@@ -32,4 +32,12 @@ public class RegisterRequest {
     @NotBlank(message = "Rellene la contraseña de confirmación")
     private String confirmPassword;
 
+    @NotBlank(message = "Rellene la provincia")
+    private String province;
+
+    @NotBlank(message = "Rellene la localidad")
+    private String locality;
+
+    //private String photo;
+
 }

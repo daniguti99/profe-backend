@@ -1,15 +1,15 @@
 package com.daniel.profe.profe_backend.infraestructure.security;
 
 import com.daniel.profe.profe_backend.domain.port.out.PasswordEncoderPort;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class BCryptAdapter implements PasswordEncoderPort {
 
     private final PasswordEncoder passwordEncoder;
-
-    public BCryptAdapter(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public String encode(String rawPassword) {
