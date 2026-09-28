@@ -12,6 +12,7 @@ import lombok.*;
 public class LoginRequest {
 
     @Email(message = "Email inválido")
+    @NotBlank(message = "Rellene el email")
     private String email;
 
     @NotBlank(message = "Rellene la contraseña")

@@ -8,9 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LoginResponse {
-
     private String token;
-    private String email;
-    private String username;
-    private String role;
+    private String tokenType;
+    private Long expiresInMs;
+    private UserInfo user;
+    private String message;
 }
