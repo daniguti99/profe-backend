@@ -1,6 +1,5 @@
 package com.daniel.profe.profe_backend.application.dto.auth;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -11,9 +10,8 @@ import lombok.*;
 @Builder
 public class LoginRequest {
 
-    @Email(message = "Email inválido")
-    @NotBlank(message = "Rellene el email")
-    private String email;
+    @NotBlank(message = "Rellene el email o nombre de usuario")
+    private String login;
 
     @NotBlank(message = "Rellene la contraseña")
     private String password;

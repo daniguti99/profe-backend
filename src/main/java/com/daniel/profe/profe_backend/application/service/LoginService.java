@@ -56,6 +56,10 @@ public class LoginService implements LoginUseCase {
     }
 
     public User validateUserExists(LoginRequest loginRequest) {
-        return userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UserNotFoundException("Mensaje de error: Usuario no encontrado"));
+        String login = loginRequest.getLogin();
+
+        return userRepository.findByEmail(login)
+                .orElseGet(() -> userRepository.findByUsername(login)
+                        .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado")));
     }
 }
