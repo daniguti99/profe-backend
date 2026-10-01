@@ -30,6 +30,12 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        //.map(userMapper::toDomain) Busca un usuario por id y lo convierte a modelo de dominio si existe.
+        return repository.findById(id).map(userMapper::toDomain);
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) {
         //.map(userMapper::toDomain) Busca un usuario por email y lo convierte a modelo de dominio si existe.
         return repository.findByEmail(email).map(userMapper::toDomain);
