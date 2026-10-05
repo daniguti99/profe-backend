@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
 
         String error = ex.getBindingResult()
                 .getFieldErrors()
-                .getFirst()
+                .get(0)
                 .getDefaultMessage();
 
         return ResponseEntity.badRequest()
