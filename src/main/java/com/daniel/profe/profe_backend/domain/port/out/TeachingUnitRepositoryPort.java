@@ -20,4 +20,5 @@ import java.util.List;
  */
 public interface TeachingUnitRepositoryPort {
     List<TeachingUnit> findByUserId(Integer userId);
+    TeachingUnit save(TeachingUnit teachingUnit);
 }

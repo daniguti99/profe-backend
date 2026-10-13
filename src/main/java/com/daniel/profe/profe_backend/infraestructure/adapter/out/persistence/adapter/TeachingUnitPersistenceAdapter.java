@@ -2,6 +2,7 @@ package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.a
 
 import com.daniel.profe.profe_backend.domain.model.TeachingUnit;
 import com.daniel.profe.profe_backend.domain.port.out.TeachingUnitRepositoryPort;
+import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.TeachingUnitEntity;
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.repository.TeachingUnitJpaRepository;
 import com.daniel.profe.profe_backend.infraestructure.mapper.TeachingUnitMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,12 @@ public class TeachingUnitPersistenceAdapter implements TeachingUnitRepositoryPor
         return repository.findByUserIdWithRelations(userId).stream()
                 .map(teachingUnitMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public TeachingUnit save(TeachingUnit teachingUnit) {
+        TeachingUnitEntity entity = teachingUnitMapper.toEntity(teachingUnit);
+        TeachingUnitEntity saved = repository.save(entity);
+        return teachingUnitMapper.toDomain(saved);
     }
 }

@@ -1,13 +1,20 @@
 package com.daniel.profe.profe_backend.infraestructure.adapter.in.rest;
 
+import com.daniel.profe.profe_backend.application.dto.session.CreateSessionRequest;
+import com.daniel.profe.profe_backend.application.dto.session.CreateSessionResponse;
 import com.daniel.profe.profe_backend.application.dto.session.SessionDTO;
 import com.daniel.profe.profe_backend.application.dto.session.SessionListResponseDTO;
 import com.daniel.profe.profe_backend.domain.model.User;
+import com.daniel.profe.profe_backend.domain.port.in.CreateSessionUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.GetSessionsUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +52,7 @@ import java.util.List;
 public class SessionController {
 
     private final GetSessionsUseCase getSessionsUseCase;
+    private final CreateSessionUseCase createSessionUseCase;
 
     /**
      * Devuelve las sesiones del usuario autenticado.
@@ -66,5 +74,25 @@ public class SessionController {
         return ResponseEntity.ok(sesiones.isEmpty()
                 ? SessionListResponseDTO.sinSesiones()
                 : SessionListResponseDTO.conSesiones(sesiones));
+    }
+
+    /**
+     * Crea una sesión para el usuario autenticado.
+     *
+     * <p>El caso de uso recibe el {@code id} del principal del {@code Authentication} y el cuerpo de
+     * la petición con los datos de la sesión. El {@code userId} se toma siempre del token, nunca del
+     * cuerpo.
+     *
+     * @param request cuerpo con los datos de la sesión a crear
+     * @param authentication contexto de seguridad dejado por el filtro de JWT
+     * @return 201 con la sesión creada
+     */
+    @PostMapping
+    public ResponseEntity<CreateSessionResponse> createSession(@Valid @RequestBody CreateSessionRequest request, Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        CreateSessionResponse response = createSessionUseCase.createSession(request, principal.getId());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 }

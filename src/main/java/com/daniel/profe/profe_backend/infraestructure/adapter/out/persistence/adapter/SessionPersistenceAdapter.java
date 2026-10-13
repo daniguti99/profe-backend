@@ -2,6 +2,7 @@ package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.a
 
 import com.daniel.profe.profe_backend.domain.model.Session;
 import com.daniel.profe.profe_backend.domain.port.out.SessionRepositoryPort;
+import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.SessionEntity;
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.repository.SessionJpaRepository;
 import com.daniel.profe.profe_backend.infraestructure.mapper.SessionMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,12 @@ public class SessionPersistenceAdapter implements SessionRepositoryPort {
         return repository.findByUserIdWithRelations(userId).stream()
                 .map(sessionMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Session save(Session session) {
+        SessionEntity entity = sessionMapper.toEntity(session);
+        SessionEntity saved = repository.save(entity);
+        return sessionMapper.toDomain(saved);
     }
 }

@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CourseRepositoryPort {
     List<Course> findAll();
+    boolean existsById(Integer id);
 }

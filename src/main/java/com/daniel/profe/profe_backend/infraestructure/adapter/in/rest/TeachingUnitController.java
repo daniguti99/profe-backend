@@ -1,13 +1,20 @@
 package com.daniel.profe.profe_backend.infraestructure.adapter.in.rest;
 
+import com.daniel.profe.profe_backend.application.dto.teachingunit.CreateTeachingUnitRequest;
+import com.daniel.profe.profe_backend.application.dto.teachingunit.CreateTeachingUnitResponse;
 import com.daniel.profe.profe_backend.application.dto.teachingunit.TeachingUnitDTO;
 import com.daniel.profe.profe_backend.application.dto.teachingunit.TeachingUnitListResponseDTO;
 import com.daniel.profe.profe_backend.domain.model.User;
+import com.daniel.profe.profe_backend.domain.port.in.CreateTeachingUnitUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.GetTeachingUnitsUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +52,7 @@ import java.util.List;
 public class TeachingUnitController {
 
     private final GetTeachingUnitsUseCase getTeachingUnitsUseCase;
+    private final CreateTeachingUnitUseCase createTeachingUnitUseCase;
 
     /**
      * Devuelve las unidades didácticas del docente autenticado.
@@ -66,5 +74,25 @@ public class TeachingUnitController {
         return ResponseEntity.ok(unidades.isEmpty()
                 ? TeachingUnitListResponseDTO.sinUnidades()
                 : TeachingUnitListResponseDTO.conUnidades(unidades));
+    }
+
+    /**
+     * Crea una unidad didáctica para el docente autenticado.
+     *
+     * <p>El caso de uso recibe el {@code id} del principal del {@code Authentication} y el cuerpo de
+     * la petición con los datos de la unidad. El {@code userId} se toma siempre del token, nunca del
+     * cuerpo.
+     *
+     * @param request cuerpo con los datos de la unidad a crear
+     * @param authentication contexto de seguridad dejado por el filtro de JWT
+     * @return 201 con la unidad creada
+     */
+    @PostMapping
+    public ResponseEntity<CreateTeachingUnitResponse> createTeachingUnit(
+            @Valid @RequestBody CreateTeachingUnitRequest request,
+            Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        CreateTeachingUnitResponse response = createTeachingUnitUseCase.createTeachingUnit(request, principal.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

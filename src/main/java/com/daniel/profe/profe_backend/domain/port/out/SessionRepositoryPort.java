@@ -20,4 +20,5 @@ import java.util.List;
  */
 public interface SessionRepositoryPort {
     List<Session> findByUserId(Integer userId);
+    Session save(Session session);
 }

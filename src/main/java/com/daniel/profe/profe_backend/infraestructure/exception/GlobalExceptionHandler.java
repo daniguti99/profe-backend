@@ -221,6 +221,48 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCourseNotFound(
+            CourseNotFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        ErrorResponse.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.NOT_FOUND.value())
+                                .error(ex.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(TeachingUnitNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTeachingUnitNotFound(
+            TeachingUnitNotFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        ErrorResponse.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.NOT_FOUND.value())
+                                .error(ex.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(TeachingUnitNotOwnedException.class)
+    public ResponseEntity<ErrorResponse> handleTeachingUnitNotOwned(
+            TeachingUnitNotOwnedException ex) {
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(
+                        ErrorResponse.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.FORBIDDEN.value())
+                                .error(ex.getMessage())
+                                .build()
+                );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex) {
