@@ -26,4 +26,6 @@ public class TeachingUnitDTO {
     private String description;
     private String schedule;
     private String notes;
+
+    private Boolean active;
 }

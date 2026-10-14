@@ -2,17 +2,25 @@ package com.daniel.profe.profe_backend.infraestructure.adapter.in.rest;
 
 import com.daniel.profe.profe_backend.application.dto.teachingunit.CreateTeachingUnitRequest;
 import com.daniel.profe.profe_backend.application.dto.teachingunit.CreateTeachingUnitResponse;
+import com.daniel.profe.profe_backend.application.dto.teachingunit.DeleteTeachingUnitResponse;
 import com.daniel.profe.profe_backend.application.dto.teachingunit.TeachingUnitDTO;
 import com.daniel.profe.profe_backend.application.dto.teachingunit.TeachingUnitListResponseDTO;
+import com.daniel.profe.profe_backend.application.dto.teachingunit.UpdateTeachingUnitRequest;
+import com.daniel.profe.profe_backend.application.dto.teachingunit.UpdateTeachingUnitResponse;
 import com.daniel.profe.profe_backend.domain.model.User;
 import com.daniel.profe.profe_backend.domain.port.in.CreateTeachingUnitUseCase;
+import com.daniel.profe.profe_backend.domain.port.in.DeleteTeachingUnitUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.GetTeachingUnitsUseCase;
+import com.daniel.profe.profe_backend.domain.port.in.UpdateTeachingUnitUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Adaptador de entrada REST para obtener las unidades didácticas del docente autenticado.
+ * Adaptador de entrada REST para gestionar las unidades didácticas del docente autenticado.
  *
  * <p><b>Identidad (RF-2 y RF-8).</b> El identificador del usuario sale <b>únicamente</b> del
  * contexto de seguridad: el filtro de JWT deja como principal del {@code Authentication} un
@@ -53,9 +61,11 @@ public class TeachingUnitController {
 
     private final GetTeachingUnitsUseCase getTeachingUnitsUseCase;
     private final CreateTeachingUnitUseCase createTeachingUnitUseCase;
+    private final UpdateTeachingUnitUseCase updateTeachingUnitUseCase;
+    private final DeleteTeachingUnitUseCase deleteTeachingUnitUseCase;
 
     /**
-     * Devuelve las unidades didácticas del docente autenticado.
+     * Devuelve las unidades didácticas activas del docente autenticado.
      *
      * <p>El caso de uso recibe el {@code id} del principal del {@code Authentication}; el orden de
      * la lista lo garantiza la consulta y el servicio no lo altera, por lo que aquí no se reordena
@@ -94,5 +104,50 @@ public class TeachingUnitController {
         User principal = (User) authentication.getPrincipal();
         CreateTeachingUnitResponse response = createTeachingUnitUseCase.createTeachingUnit(request, principal.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Actualiza parcialmente una unidad didáctica existente del usuario autenticado.
+     *
+     * <p>El caso de uso recibe el {@code id} del principal del {@code Authentication}, el
+     * identificador de la unidad de la ruta y el cuerpo con los campos a actualizar. Solo se
+     * modifican los campos presentes en el cuerpo; los ausentes se dejan intactos. El
+     * {@code userId} se toma siempre del token, nunca del cuerpo.
+     *
+     * @param id identificador de la unidad a actualizar
+     * @param request cuerpo con los campos a actualizar de la unidad
+     * @param authentication contexto de seguridad dejado por el filtro de JWT
+     * @return 200 con la unidad actualizada
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdateTeachingUnitResponse> updateTeachingUnit(
+            @PathVariable Integer id,
+            @Valid @RequestBody UpdateTeachingUnitRequest request,
+            Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        UpdateTeachingUnitResponse response = updateTeachingUnitUseCase.updateTeachingUnit(id, request, principal.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Elimina (desactiva) una unidad didáctica del usuario autenticado.
+     *
+     * <p>El caso de uso recibe el {@code id} del principal del {@code Authentication} y el
+     * identificador de la unidad de la ruta. El {@code userId} se toma siempre del token.
+     *
+     * <p>La eliminación es un soft delete con cascada: la unidad pasa a {@code active=false} y
+     * todas sus sesiones activas también se desactivan. La operación es transaccional.
+     *
+     * @param id identificador de la unidad a eliminar
+     * @param authentication contexto de seguridad dejado por el filtro de JWT
+     * @return 200 con la unidad eliminada
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DeleteTeachingUnitResponse> deleteTeachingUnit(
+            @PathVariable Integer id,
+            Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        DeleteTeachingUnitResponse response = deleteTeachingUnitUseCase.deleteTeachingUnit(id, principal.getId());
+        return ResponseEntity.ok(response);
     }
 }

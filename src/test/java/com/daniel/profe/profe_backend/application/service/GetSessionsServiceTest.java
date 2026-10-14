@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +32,21 @@ class GetSessionsServiceTest {
         public List<Session> findByUserId(Integer userId) {
             this.usuarioRecibido = userId;
             return aDevolver;
+        }
+
+        @Override
+        public Optional<Session> findById(Integer id) {
+            return Optional.empty();
+        }
+
+        @Override
+        public List<Session> findByTeachingUnitId(Integer teachingUnitId) {
+            return List.of();
+        }
+
+        @Override
+        public Session save(Session session) {
+            return null;
         }
     }
 

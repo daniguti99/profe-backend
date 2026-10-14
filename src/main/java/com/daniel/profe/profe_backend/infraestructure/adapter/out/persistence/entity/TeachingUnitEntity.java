@@ -31,6 +31,9 @@ public class TeachingUnitEntity {
     @Column(name = "notas")
     private String notes;
 
+    @Column(name = "activo")
+    private Boolean active;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario")
     private UserEntity user;

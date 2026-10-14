@@ -19,4 +19,6 @@ public class TeachingUnit {
     private String description;
     private String schedule;
     private String notes;
+
+    private Boolean active;
 }

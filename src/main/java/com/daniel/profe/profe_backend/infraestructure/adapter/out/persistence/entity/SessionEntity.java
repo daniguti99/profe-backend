@@ -71,6 +71,9 @@ public class SessionEntity {
     @Column(name = "vuelta_calma_observaciones")
     private String coolDownObservations;
 
+    @Column(name = "activo")
+    private Boolean active;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_unidad")
     private TeachingUnitEntity teachingUnit;

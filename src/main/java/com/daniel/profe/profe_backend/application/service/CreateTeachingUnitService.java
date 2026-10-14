@@ -28,6 +28,7 @@ public class CreateTeachingUnitService implements CreateTeachingUnitUseCase {
         TeachingUnit unit = TeachingUnit.builder()
                 .userId(userId.intValue())
                 .courseId(request.getCourseId())
+                .active(true)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .schedule(request.getSchedule())
@@ -44,6 +45,7 @@ public class CreateTeachingUnitService implements CreateTeachingUnitUseCase {
                 .description(saved.getDescription())
                 .schedule(saved.getSchedule())
                 .notes(saved.getNotes())
+                .active(saved.getActive())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.daniel.profe.profe_backend.domain.port.out;
 import com.daniel.profe.profe_backend.domain.model.TeachingUnit;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Puerto de salida para consultar las unidades didácticas de un usuario.
@@ -20,5 +21,6 @@ import java.util.List;
  */
 public interface TeachingUnitRepositoryPort {
     List<TeachingUnit> findByUserId(Integer userId);
+    Optional<TeachingUnit> findById(Integer id);
     TeachingUnit save(TeachingUnit teachingUnit);
 }

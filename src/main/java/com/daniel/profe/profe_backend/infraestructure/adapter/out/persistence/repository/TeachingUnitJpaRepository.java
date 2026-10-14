@@ -10,7 +10,7 @@ import java.util.List;
 public interface TeachingUnitJpaRepository extends JpaRepository<TeachingUnitEntity, Integer> {
 
     /**
-     * Devuelve las unidades didácticas del usuario indicado, con las relaciones
+     * Devuelve las unidades didácticas activas del usuario indicado, con las relaciones
      * {@code user} y {@code course} ya cargadas y en orden ascendente de identificador.
      *
      * <p>La consulta se escribe a mano en lugar de como método derivado porque solo así Spring Data
@@ -21,6 +21,9 @@ public interface TeachingUnitJpaRepository extends JpaRepository<TeachingUnitEnt
      * al resultado: la propia consulta es la fuente de verdad de que ambas relaciones existen. Por
      * eso no se cargan las colecciones de la entidad, que multiplicarían las filas devueltas.
      *
+     * <p>El filtro {@code tu.activo = true} garantiza que solo se devuelven unidades activas,
+     * excluyendo las que han sido borradas lógicamente.
+     *
      * <p>El orden lo fija el {@code ORDER BY} de SQL y no un {@code sorted()} en Java, para que los
      * {@code map} y {@code filter} posteriores no puedan desordenar el resultado.
      */
@@ -29,6 +32,7 @@ public interface TeachingUnitJpaRepository extends JpaRepository<TeachingUnitEnt
         JOIN FETCH tu.user
         JOIN FETCH tu.course
         WHERE tu.user.id = :userId
+        AND tu.active = true
         ORDER BY tu.id ASC
         """)
     List<TeachingUnitEntity> findByUserIdWithRelations(@Param("userId") Integer userId);

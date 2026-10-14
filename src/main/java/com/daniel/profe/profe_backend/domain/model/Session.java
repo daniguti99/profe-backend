@@ -40,4 +40,6 @@ public class Session {
     private String coolDownDescription;
     private String coolDownGraphicUrl;
     private String coolDownObservations;
+
+    private Boolean active;
 }

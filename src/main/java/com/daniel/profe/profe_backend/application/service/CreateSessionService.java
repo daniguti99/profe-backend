@@ -40,6 +40,7 @@ public class CreateSessionService implements CreateSessionUseCase {
         Session session = Session.builder()
                 .teachingUnitId(request.getTeachingUnitId())
                 .userId(userId.intValue())
+                .active(true)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .materials(request.getMaterials())
@@ -82,6 +83,7 @@ public class CreateSessionService implements CreateSessionUseCase {
                 .coolDownDescription(saved.getCoolDownDescription())
                 .coolDownGraphicUrl(saved.getCoolDownGraphicUrl())
                 .coolDownObservations(saved.getCoolDownObservations())
+                .active(saved.getActive())
                 .build();
     }
 }

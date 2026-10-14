@@ -58,6 +58,7 @@ public class GetTeachingUnitsService implements GetTeachingUnitsUseCase {
                         .description(u.getDescription())
                         .schedule(u.getSchedule())
                         .notes(u.getNotes())
+                        .active(u.getActive())
                         .build())
                 .toList();
         // Sin try/catch deliberadamente: un fallo interno debe propagarse hasta el manejador de

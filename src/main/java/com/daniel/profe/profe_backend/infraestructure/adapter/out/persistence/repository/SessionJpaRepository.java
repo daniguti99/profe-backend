@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integer> {
 
     /**
-     * Devuelve las sesiones del usuario indicado, con las relaciones
+     * Devuelve las sesiones activas del usuario indicado, con las relaciones
      * {@code teachingUnit} y {@code user} ya cargadas y en orden ascendente de identificador.
      *
      * <p>La consulta se escribe a mano en lugar de como método derivado porque solo así Spring Data
@@ -22,6 +23,9 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integ
      * existen. Por eso no se cargan las colecciones de la entidad, que multiplicarían las filas
      * devueltas.
      *
+     * <p>El filtro {@code s.activo = true} garantiza que solo se devuelven sesiones activas,
+     * excluyendo las que han sido borradas lógicamente.
+     *
      * <p>El orden lo fija el {@code ORDER BY} de SQL y no un {@code sorted()} en Java, para que los
      * {@code map} y {@code filter} posteriores no puedan desordenar el resultado.
      */
@@ -30,7 +34,20 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integ
         JOIN FETCH s.teachingUnit
         JOIN FETCH s.user
         WHERE s.user.id = :userId
+        AND s.active = true
         ORDER BY s.id ASC
         """)
     List<SessionEntity> findByUserIdWithRelations(@Param("userId") Integer userId);
+
+    /**
+     * Devuelve las sesiones activas de una unidad didáctica específica.
+     * Se usa para la cascada de borrado lógico al desactivar una unidad.
+     */
+    @Query("""
+        SELECT s FROM SessionEntity s
+        WHERE s.teachingUnit.id = :teachingUnitId
+        AND s.active = true
+        ORDER BY s.id ASC
+        """)
+    List<SessionEntity> findByTeachingUnitId(@Param("teachingUnitId") Integer teachingUnitId);
 }

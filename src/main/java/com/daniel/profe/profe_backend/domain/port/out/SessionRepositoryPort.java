@@ -3,6 +3,7 @@ package com.daniel.profe.profe_backend.domain.port.out;
 import com.daniel.profe.profe_backend.domain.model.Session;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Puerto de salida para consultar las sesiones de un usuario.
@@ -20,5 +21,7 @@ import java.util.List;
  */
 public interface SessionRepositoryPort {
     List<Session> findByUserId(Integer userId);
+    Optional<Session> findById(Integer id);
+    List<Session> findByTeachingUnitId(Integer teachingUnitId);
     Session save(Session session);
 }
