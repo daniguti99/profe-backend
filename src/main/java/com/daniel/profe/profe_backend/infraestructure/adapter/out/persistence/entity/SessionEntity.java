@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -73,6 +74,18 @@ public class SessionEntity {
 
     @Column(name = "activo")
     private Boolean active;
+
+    @Column(name = "publico")
+    private Boolean isPublic;
+
+    @Column(name = "fecha_publicacion")
+    private LocalDateTime publishedAt;
+
+    @Column(name = "visualizaciones")
+    private Integer views;
+
+    @Column(name = "descargas")
+    private Integer downloads;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_unidad")

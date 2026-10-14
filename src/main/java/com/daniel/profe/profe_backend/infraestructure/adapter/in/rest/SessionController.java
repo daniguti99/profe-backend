@@ -7,11 +7,14 @@ import com.daniel.profe.profe_backend.application.dto.session.SessionDTO;
 import com.daniel.profe.profe_backend.application.dto.session.SessionListResponseDTO;
 import com.daniel.profe.profe_backend.application.dto.session.UpdateSessionRequest;
 import com.daniel.profe.profe_backend.application.dto.session.UpdateSessionResponse;
+import com.daniel.profe.profe_backend.application.dto.session.UpdateVisibilityRequest;
+import com.daniel.profe.profe_backend.application.dto.session.UpdateVisibilityResponse;
 import com.daniel.profe.profe_backend.domain.model.User;
 import com.daniel.profe.profe_backend.domain.port.in.CreateSessionUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.DeleteSessionUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.GetSessionsUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.UpdateSessionUseCase;
+import com.daniel.profe.profe_backend.domain.port.in.UpdateSessionVisibilityUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,6 +66,7 @@ public class SessionController {
     private final CreateSessionUseCase createSessionUseCase;
     private final UpdateSessionUseCase updateSessionUseCase;
     private final DeleteSessionUseCase deleteSessionUseCase;
+    private final UpdateSessionVisibilityUseCase updateSessionVisibilityUseCase;
 
     /**
      * Devuelve las sesiones activas del usuario autenticado.
@@ -148,6 +152,29 @@ public class SessionController {
             Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
         DeleteSessionResponse response = deleteSessionUseCase.deleteSession(id, principal.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Cambia la visibilidad de una sesión del usuario autenticado (publicar o volver a privada).
+     *
+     * <p>Es un endpoint dedicado, separado del PATCH de edición, porque la visibilidad es una acción
+     * propia con su confirmación: el cuerpo solo lleva el nuevo estado {@code isPublic}. El
+     * {@code userId} sale siempre del token, nunca del cuerpo ni de la ruta; así una sesión ajena
+     * responde 403 y una inexistente o inactiva, 404.</p>
+     *
+     * @param id identificador de la sesión de la ruta
+     * @param request cuerpo con el nuevo estado de visibilidad
+     * @param authentication contexto de seguridad dejado por el filtro de JWT
+     * @return 200 con la sesión actualizada y su mensaje
+     */
+    @PatchMapping("/{id}/visibility")
+    public ResponseEntity<UpdateVisibilityResponse> updateVisibility(
+            @PathVariable Integer id,
+            @Valid @RequestBody UpdateVisibilityRequest request,
+            Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        UpdateVisibilityResponse response = updateSessionVisibilityUseCase.updateVisibility(id, request, principal.getId());
         return ResponseEntity.ok(response);
     }
 }

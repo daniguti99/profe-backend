@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -42,4 +43,16 @@ public class Session {
     private String coolDownObservations;
 
     private Boolean active;
+
+    /** Visibilidad de la sesión: {@code true} si es pública, {@code false} si es privada. */
+    private Boolean isPublic;
+
+    /** Fecha y hora de la última publicación; {@code null} si nunca se ha publicado. */
+    private LocalDateTime publishedAt;
+
+    /** Número de visualizaciones acumuladas de la sesión pública. */
+    private Integer views;
+
+    /** Número de descargas acumuladas; se incrementará con la exportación a PDF. */
+    private Integer downloads;
 }

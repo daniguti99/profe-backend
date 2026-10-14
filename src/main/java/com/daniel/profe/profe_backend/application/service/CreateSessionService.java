@@ -58,6 +58,12 @@ public class CreateSessionService implements CreateSessionUseCase {
                 .coolDownDescription(request.getCoolDownDescription())
                 .coolDownGraphicUrl(request.getCoolDownGraphicUrl())
                 .coolDownObservations(request.getCoolDownObservations())
+                // Una sesión nace privada y sin contadores. publishedAt se queda a null: solo se
+                // rellena al publicar. Se inicializan explícitamente porque las columnas son NOT NULL
+                // y Hibernate inserta todos los campos del builder.
+                .isPublic(false)
+                .views(0)
+                .downloads(0)
                 .build();
 
         Session saved = sessionRepositoryPort.save(session);

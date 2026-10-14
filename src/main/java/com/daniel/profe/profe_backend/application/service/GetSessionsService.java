@@ -73,6 +73,8 @@ public class GetSessionsService implements GetSessionsUseCase {
                         .coolDownGraphicUrl(s.getCoolDownGraphicUrl())
                         .coolDownObservations(s.getCoolDownObservations())
                         .active(s.getActive())
+                        .isPublic(s.getIsPublic())
+                        .publishedAt(s.getPublishedAt())
                         .build())
                 .toList();
         // Sin try/catch deliberadamente: un fallo interno debe propagarse hasta el manejador de

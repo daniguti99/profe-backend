@@ -123,6 +123,8 @@ public class UpdateSessionService implements UpdateSessionUseCase {
                         .coolDownGraphicUrl(saved.getCoolDownGraphicUrl())
                         .coolDownObservations(saved.getCoolDownObservations())
                         .active(saved.getActive())
+                        .isPublic(saved.getIsPublic())
+                        .publishedAt(saved.getPublishedAt())
                         .build())
                 .build();
     }

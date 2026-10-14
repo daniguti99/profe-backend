@@ -48,6 +48,21 @@ class GetSessionsServiceTest {
         public Session save(Session session) {
             return null;
         }
+
+        @Override
+        public List<com.daniel.profe.profe_backend.domain.model.PublicSession> findPublicSessions(
+                com.daniel.profe.profe_backend.domain.model.PublicSessionSort sort) {
+            return List.of();
+        }
+
+        @Override
+        public Optional<com.daniel.profe.profe_backend.domain.model.PublicSession> findPublicById(Integer id) {
+            return Optional.empty();
+        }
+
+        @Override
+        public void incrementViews(Integer id) {
+        }
     }
 
     private static Session sesionCompleta() {

@@ -70,6 +70,8 @@ public class DeleteSessionService implements DeleteSessionUseCase {
                         .coolDownGraphicUrl(saved.getCoolDownGraphicUrl())
                         .coolDownObservations(saved.getCoolDownObservations())
                         .active(saved.getActive())
+                        .isPublic(saved.getIsPublic())
+                        .publishedAt(saved.getPublishedAt())
                         .build())
                 .build();
     }

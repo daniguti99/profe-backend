@@ -3,6 +3,7 @@ package com.daniel.profe.profe_backend.application.dto.session;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * DTO de un elemento de la respuesta de sesiones.
@@ -47,4 +48,7 @@ public class SessionDTO {
     private String coolDownObservations;
 
     private Boolean active;
+
+    private Boolean isPublic;
+    private LocalDateTime publishedAt;
 }

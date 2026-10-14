@@ -1,7 +1,9 @@
 package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.repository;
 
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.SessionEntity;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -50,4 +52,47 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integ
         ORDER BY s.id ASC
         """)
     List<SessionEntity> findByTeachingUnitId(@Param("teachingUnitId") Integer teachingUnitId);
+
+    /**
+     * Devuelve las sesiones públicas y activas de cualquier autor, con el autor ya cargado, en el
+     * orden que indique el {@code Sort} recibido.
+     *
+     * <p>El {@code JOIN FETCH} interno garantiza que la sesión tiene autor y evita el N+1 al
+     * construir la información del autor en el DTO. El {@code Sort} lo construye el adaptador, que
+     * traduce el enum de dominio; aquí no se fija ningún {@code ORDER BY} fijo para no chocar con
+     * él.</p>
+     */
+    @Query("""
+        SELECT s FROM SessionEntity s
+        JOIN FETCH s.user
+        WHERE s.isPublic = true
+        AND s.active = true
+        """)
+    List<SessionEntity> findPublicSessions(Sort sort);
+
+    /**
+     * Devuelve una sesión pública y activa por su identificador, con el autor ya cargado.
+     *
+     * <p>El filtro {@code publico = true AND activo = true} es lo que convierte "no existe", "es
+     * privada" y "está inactiva" en un único resultado vacío, para que el detalle público no
+     * revele la existencia de sesiones privadas ajenas.</p>
+     */
+    @Query("""
+        SELECT s FROM SessionEntity s
+        JOIN FETCH s.user
+        WHERE s.id = :id
+        AND s.isPublic = true
+        AND s.active = true
+        """)
+    Optional<SessionEntity> findPublicById(@Param("id") Integer id);
+
+    /**
+     * Incrementa en uno el contador de visualizaciones de una sesión.
+     *
+     * <p>Es un {@code UPDATE} atómico en lugar de leer, sumar y guardar: así dos visualizaciones
+     * simultáneas no se pisan entre sí.</p>
+     */
+    @Modifying
+    @Query("UPDATE SessionEntity s SET s.views = s.views + 1 WHERE s.id = :id")
+    void incrementViews(@Param("id") Integer id);
 }
