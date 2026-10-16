@@ -2,6 +2,7 @@ package com.daniel.profe.profe_backend.domain.port.out;
 
 import com.daniel.profe.profe_backend.domain.model.PublicSession;
 import com.daniel.profe.profe_backend.domain.model.PublicSessionSort;
+import com.daniel.profe.profe_backend.domain.model.Resource;
 import com.daniel.profe.profe_backend.domain.model.Session;
 
 import java.util.List;
@@ -56,4 +57,19 @@ public interface SessionRepositoryPort {
      * @param id identificador de la sesión
      */
     void incrementViews(Integer id);
+
+    /**
+     * Incrementa en uno el contador de descargas de una sesión.
+     *
+     * @param id identificador de la sesión
+     */
+    void incrementDownloads(Integer id);
+
+    /**
+     * Devuelve los recursos asociados a una sesión.
+     *
+     * @param sessionId identificador de la sesión
+     * @return lista de recursos; vacía si la sesión no tiene ninguno
+     */
+    List<Resource> findResourcesBySessionId(Integer sessionId);
 }

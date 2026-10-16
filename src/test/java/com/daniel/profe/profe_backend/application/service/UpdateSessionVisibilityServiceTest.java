@@ -6,6 +6,7 @@ import com.daniel.profe.profe_backend.domain.exception.SessionNotOwnedException;
 import com.daniel.profe.profe_backend.domain.exception.SessionNotFoundException;
 import com.daniel.profe.profe_backend.domain.model.PublicSession;
 import com.daniel.profe.profe_backend.domain.model.PublicSessionSort;
+import com.daniel.profe.profe_backend.domain.model.Resource;
 import com.daniel.profe.profe_backend.domain.model.Session;
 import com.daniel.profe.profe_backend.domain.port.out.SessionRepositoryPort;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,15 @@ class UpdateSessionVisibilityServiceTest {
 
         @Override
         public void incrementViews(Integer id) {
+        }
+
+        @Override
+        public void incrementDownloads(Integer id) {
+        }
+
+        @Override
+        public List<Resource> findResourcesBySessionId(Integer sessionId) {
+            return List.of();
         }
     }
 

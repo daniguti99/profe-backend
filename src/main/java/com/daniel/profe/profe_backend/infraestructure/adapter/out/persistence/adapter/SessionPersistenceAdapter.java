@@ -2,8 +2,10 @@ package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.a
 
 import com.daniel.profe.profe_backend.domain.model.PublicSession;
 import com.daniel.profe.profe_backend.domain.model.PublicSessionSort;
+import com.daniel.profe.profe_backend.domain.model.Resource;
 import com.daniel.profe.profe_backend.domain.model.Session;
 import com.daniel.profe.profe_backend.domain.port.out.SessionRepositoryPort;
+import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.ResourceEntity;
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.SessionEntity;
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.repository.SessionJpaRepository;
 import com.daniel.profe.profe_backend.infraestructure.mapper.SessionMapper;
@@ -83,6 +85,32 @@ public class SessionPersistenceAdapter implements SessionRepositoryPort {
     @Override
     public void incrementViews(Integer id) {
         repository.incrementViews(id);
+    }
+
+    @Override
+    public void incrementDownloads(Integer id) {
+        repository.incrementDownloads(id);
+    }
+
+    @Override
+    public List<Resource> findResourcesBySessionId(Integer sessionId) {
+        return repository.findResourcesBySessionId(sessionId).stream()
+                .map(this::toResource)
+                .toList();
+    }
+
+    /**
+     * Traduce la entidad de recurso al modelo de dominio, sin cargar la sesión completa: solo se
+     * copia su identificador.
+     */
+    private Resource toResource(ResourceEntity entity) {
+        return Resource.builder()
+                .id(entity.getId())
+                .sessionId(entity.getSession() == null ? null : entity.getSession().getId())
+                .type(entity.getType())
+                .url(entity.getUrl())
+                .description(entity.getDescription())
+                .build();
     }
 
     /**

@@ -63,6 +63,16 @@ class GetSessionsServiceTest {
         @Override
         public void incrementViews(Integer id) {
         }
+
+        @Override
+        public void incrementDownloads(Integer id) {
+        }
+
+        @Override
+        public List<com.daniel.profe.profe_backend.domain.model.Resource> findResourcesBySessionId(
+                Integer sessionId) {
+            return List.of();
+        }
     }
 
     private static Session sesionCompleta() {

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${#strings.isEmpty(session.title) ? 'Sesión' : session.title}">Sesión</title>
+    <style>
+        /*
+         * Estética de la app (tokens.css): tinta #16233A, tiza #F6F5F1, acento #FF7A3C,
+         * césped #2F9E6E y grises. El PDF solo admite los tipos Helvetica/Arial, así que la
+         * personalidad se consigue con la paleta, las mayúsculas espaciadas y los bordes de
+         * acento —los mismos recursos que usa la interfaz.
+         */
+        @page {
+            size: A4;
+            margin: 16mm 14mm 18mm 14mm;
+            @bottom-left {
+                content: "ProFE";
+                font-family: "Helvetica", "Arial", sans-serif;
+                font-size: 8pt;
+                font-weight: bold;
+                letter-spacing: 1.4pt;
+                color: #FF7A3C;
+            }
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: "Helvetica", "Arial", sans-serif;
+                font-size: 8pt;
+                color: #6B7280;
+            }
+        }
+
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.5;
+            color: #16233A;
+            margin: 0;
+        }
+
+        p {
+            margin: 0 0 3mm 0;
+            white-space: pre-line;
+        }
+
+        a {
+            color: #16233A;
+            text-decoration: none;
+        }
+
+        /* --- Portada: solo en la primera página --- */
+
+        .cover {
+            background-color: #16233A;
+            border-bottom: 3px solid #FF7A3C;
+            border-radius: 8px;
+            padding: 7mm 7mm 6mm 7mm;
+            margin-bottom: 7mm;
+        }
+
+        .cover-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cover-mark {
+            width: 10mm;
+            height: 10mm;
+            background-color: #FF7A3C;
+            color: #16233A;
+            font-size: 15pt;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+            border-radius: 6px;
+        }
+
+        .cover-brand {
+            vertical-align: middle;
+            padding-left: 4mm;
+        }
+
+        .cover-name {
+            display: block;
+            font-size: 14pt;
+            font-weight: bold;
+            color: #F6F5F1;
+        }
+
+        .cover-kicker {
+            display: block;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.4pt;
+            color: #FF7A3C;
+        }
+
+        .cover-title {
+            font-size: 23pt;
+            font-weight: bold;
+            line-height: 1.15;
+            color: #F6F5F1;
+            margin: 7mm 0 5mm 0;
+        }
+
+        .cover-rule {
+            height: 1px;
+            background-color: #3A4A5F;
+            margin-bottom: 4mm;
+        }
+
+        .cover-avatar {
+            width: 9mm;
+            height: 9mm;
+            background-color: #FF7A3C;
+            color: #16233A;
+            font-size: 12pt;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+            border-radius: 999px;
+        }
+
+        .cover-author {
+            vertical-align: middle;
+            padding-left: 4mm;
+        }
+
+        .cover-author-name {
+            display: block;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #F6F5F1;
+        }
+
+        .cover-author-mail {
+            display: block;
+            font-size: 8.5pt;
+            color: #B9C0CC;
+        }
+
+        /* --- Índice --- */
+
+        .toc {
+            background-color: #F6F5F1;
+            border-left: 4px solid #FF7A3C;
+            border-radius: 6px;
+            padding: 5mm 6mm;
+            margin-bottom: 8mm;
+            page-break-inside: avoid;
+        }
+
+        .toc-title {
+            font-size: 9pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.4pt;
+            color: #16233A;
+            margin: 0 0 3mm 0;
+        }
+
+        .toc-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .toc-num {
+            width: 9mm;
+            font-size: 9pt;
+            font-weight: bold;
+            color: #FF7A3C;
+            vertical-align: top;
+            padding: 0.8mm 0;
+        }
+
+        .toc-text {
+            font-size: 10.5pt;
+            color: #16233A;
+            vertical-align: top;
+            padding: 0.8mm 0;
+        }
+
+        /* --- Secciones --- */
+
+        .section {
+            margin-bottom: 6mm;
+        }
+
+        .section-head {
+            width: 100%;
+            border-collapse: collapse;
+            page-break-after: avoid;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.8pt;
+            color: #2F9E6E;
+            border-left: 4px solid #FF7A3C;
+            padding-left: 3mm;
+            margin: 0;
+            page-break-after: avoid;
+        }
+
+        .section-time {
+            text-align: right;
+            vertical-align: middle;
+            white-space: nowrap;
+            padding-left: 4mm;
+        }
+
+        .pill {
+            display: inline-block;
+            background-color: #FF7A3C;
+            color: #16233A;
+            font-size: 9pt;
+            font-weight: bold;
+            letter-spacing: 0.4pt;
+            padding: 1.2mm 4mm;
+            border-radius: 999px;
+        }
+
+        .sub {
+            margin-top: 4mm;
+        }
+
+        .sub-label {
+            display: block;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.2pt;
+            color: #6B7280;
+            margin: 0 0 1.5mm 0;
+            page-break-after: avoid;
+        }
+
+        .note {
+            background-color: #F6F5F1;
+            border-radius: 6px;
+            padding: 3mm 4mm;
+            white-space: pre-line;
+        }
+
+        /* --- Tabla de campos (materiales y duración) --- */
+
+        .fields {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #D1D5DB;
+            margin-top: 3mm;
+        }
+
+        .fields th,
+        .fields td {
+            padding: 2.5mm 4mm;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid #F1F1EF;
+        }
+
+        .fields tr:last-child th,
+        .fields tr:last-child td {
+            border-bottom: none;
+        }
+
+        .fields .label {
+            width: 45mm;
+            font-size: 9pt;
+            font-weight: normal;
+            color: #6B7280;
+        }
+
+        .fields .value {
+            font-size: 10.5pt;
+            color: #16233A;
+        }
+
+        .fields tr:nth-child(even) th,
+        .fields tr:nth-child(even) td {
+            background-color: #F6F5F1;
+        }
+
+        /* --- Recursos (solo por nombre, sin URL) --- */
+
+        .resources {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 3mm;
+        }
+
+        .resource-dot {
+            width: 6mm;
+            vertical-align: top;
+            padding: 1.6mm 0 0 0;
+        }
+
+        .resource-square {
+            width: 2.4mm;
+            height: 2.4mm;
+            background-color: #FF7A3C;
+        }
+
+        .resource-text {
+            font-size: 10.5pt;
+            color: #16233A;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Portada: solo aparece en la primera página -->
+<div class="cover">
+    <table class="cover-table">
+        <tr>
+            <td class="cover-mark">P</td>
+            <td class="cover-brand">
+                <span class="cover-name">ProFE</span>
+                <span class="cover-kicker">Plan de sesión</span>
+            </td>
+        </tr>
+    </table>
+
+    <h1 class="cover-title"
+        th:text="${#strings.isEmpty(session.title) ? 'Sesión sin título' : session.title}">Sesión sin título</h1>
+
+    <div class="cover-rule"></div>
+
+    <table class="cover-table">
+        <tr>
+            <td class="cover-avatar"
+                th:text="${session.authorUsername != null and !#strings.isEmpty(session.authorUsername) ? #strings.toUpperCase(#strings.substring(session.authorUsername, 0, 1)) : '?'}">?</td>
+            <td class="cover-author">
+                <span class="cover-author-name"
+                      th:text="${#strings.isEmpty(session.authorUsername) ? 'Desconocido' : session.authorUsername}">Desconocido</span>
+                <span class="cover-author-mail" th:if="${session.authorEmail}" th:text="${session.authorEmail}"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Índice generado a partir de las secciones con contenido -->
+<div class="toc" th:if="${session.sections != null and !session.sections.isEmpty()}">
+    <p class="toc-title">Índice</p>
+    <table class="toc-table">
+        <tr th:each="s, it : ${session.sections}">
+            <td class="toc-num" th:text="${#numbers.formatInteger(it.count, 2)}">01</td>
+            <td class="toc-text">
+                <a th:href="'#' + ${s.anchor}" th:text="${s.title}">Sección</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Descripción -->
+<section class="section" id="descripcion"
+         th:if="${session.description != null and !#strings.isEmpty(session.description)}">
+    <h2 class="section-title">Descripción</h2>
+    <div class="sub">
+        <p th:text="${session.description}"></p>
+    </div>
+</section>
+
+<!-- Materiales y duración -->
+<section class="section" id="materiales"
+         th:if="${(session.totalDuration != null and !#strings.isEmpty(session.totalDuration)) or (session.materials != null and !#strings.isEmpty(session.materials))}">
+    <h2 class="section-title">Materiales y duración</h2>
+    <table class="fields">
+        <tr th:if="${session.totalDuration != null and !#strings.isEmpty(session.totalDuration)}">
+            <th class="label">Duración total</th>
+            <td class="value" th:text="${session.totalDuration}"></td>
+        </tr>
+        <tr th:if="${session.materials != null and !#strings.isEmpty(session.materials)}">
+            <th class="label">Materiales</th>
+            <td class="value" th:text="${session.materials}"></td>
+        </tr>
+    </table>
+</section>
+
+<!-- Calentamiento -->
+<section class="section" id="calentamiento"
+         th:if="${(session.warmUpTime != null and !#strings.isEmpty(session.warmUpTime)) or (session.warmUpDescription != null and !#strings.isEmpty(session.warmUpDescription)) or (session.warmUpObservations != null and !#strings.isEmpty(session.warmUpObservations))}">
+    <table class="section-head">
+        <tr>
+            <td><h2 class="section-title">Calentamiento</h2></td>
+            <td class="section-time" th:if="${session.warmUpTime != null and !#strings.isEmpty(session.warmUpTime)}">
+                <span class="pill" th:text="${session.warmUpTime}"></span>
+            </td>
+        </tr>
+    </table>
+    <div class="sub" th:if="${session.warmUpDescription != null and !#strings.isEmpty(session.warmUpDescription)}">
+        <span class="sub-label">Descripción</span>
+        <p th:text="${session.warmUpDescription}"></p>
+    </div>
+    <div class="sub" th:if="${session.warmUpObservations != null and !#strings.isEmpty(session.warmUpObservations)}">
+        <span class="sub-label">Observaciones</span>
+        <div class="note" th:text="${session.warmUpObservations}"></div>
+    </div>
+</section>
+
+<!-- Parte principal -->
+<section class="section" id="parte-principal"
+         th:if="${(session.mainPartTime != null and !#strings.isEmpty(session.mainPartTime)) or (session.mainPartDescription != null and !#strings.isEmpty(session.mainPartDescription)) or (session.mainPartObservations != null and !#strings.isEmpty(session.mainPartObservations))}">
+    <table class="section-head">
+        <tr>
+            <td><h2 class="section-title">Parte principal</h2></td>
+            <td class="section-time" th:if="${session.mainPartTime != null and !#strings.isEmpty(session.mainPartTime)}">
+                <span class="pill" th:text="${session.mainPartTime}"></span>
+            </td>
+        </tr>
+    </table>
+    <div class="sub" th:if="${session.mainPartDescription != null and !#strings.isEmpty(session.mainPartDescription)}">
+        <span class="sub-label">Descripción</span>
+        <p th:text="${session.mainPartDescription}"></p>
+    </div>
+    <div class="sub" th:if="${session.mainPartObservations != null and !#strings.isEmpty(session.mainPartObservations)}">
+        <span class="sub-label">Observaciones</span>
+        <div class="note" th:text="${session.mainPartObservations}"></div>
+    </div>
+</section>
+
+<!-- Vuelta a la calma -->
+<section class="section" id="vuelta-a-la-calma"
+         th:if="${(session.coolDownTime != null and !#strings.isEmpty(session.coolDownTime)) or (session.coolDownDescription != null and !#strings.isEmpty(session.coolDownDescription)) or (session.coolDownObservations != null and !#strings.isEmpty(session.coolDownObservations))}">
+    <table class="section-head">
+        <tr>
+            <td><h2 class="section-title">Vuelta a la calma</h2></td>
+            <td class="section-time" th:if="${session.coolDownTime != null and !#strings.isEmpty(session.coolDownTime)}">
+                <span class="pill" th:text="${session.coolDownTime}"></span>
+            </td>
+        </tr>
+    </table>
+    <div class="sub" th:if="${session.coolDownDescription != null and !#strings.isEmpty(session.coolDownDescription)}">
+        <span class="sub-label">Descripción</span>
+        <p th:text="${session.coolDownDescription}"></p>
+    </div>
+    <div class="sub" th:if="${session.coolDownObservations != null and !#strings.isEmpty(session.coolDownObservations)}">
+        <span class="sub-label">Observaciones</span>
+        <div class="note" th:text="${session.coolDownObservations}"></div>
+    </div>
+</section>
+
+<!-- Recursos (solo por nombre, sin URL) -->
+<section class="section" id="recursos"
+         th:if="${session.resources != null and !session.resources.isEmpty()}">
+    <h2 class="section-title">Recursos</h2>
+    <table class="resources">
+        <tr th:each="r : ${session.resources}">
+            <td class="resource-dot"><div class="resource-square"></div></td>
+            <td class="resource-text"
+                th:text="${(r.description != null and !#strings.isEmpty(r.description)) ? r.description : (r.type != null ? r.type : 'Recurso')}"></td>
+        </tr>
+    </table>
+</section>
+
+</body>
+</html>

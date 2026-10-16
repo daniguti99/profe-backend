@@ -1,5 +1,6 @@
 package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.repository;
 
+import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.ResourceEntity;
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.SessionEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -95,4 +96,19 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integ
     @Modifying
     @Query("UPDATE SessionEntity s SET s.views = s.views + 1 WHERE s.id = :id")
     void incrementViews(@Param("id") Integer id);
+
+    /**
+     * Incrementa en uno el contador de descargas de una sesión.
+     *
+     * <p>Es un {@code UPDATE} atómico para que dos descargas simultáneas no se pisen entre sí.</p>
+     */
+    @Modifying
+    @Query("UPDATE SessionEntity s SET s.downloads = s.downloads + 1 WHERE s.id = :id")
+    void incrementDownloads(@Param("id") Integer id);
+
+    /**
+     * Devuelve los recursos de una sesión.
+     */
+    @Query("SELECT r FROM ResourceEntity r WHERE r.session.id = :sessionId")
+    List<ResourceEntity> findResourcesBySessionId(@Param("sessionId") Integer sessionId);
 }
