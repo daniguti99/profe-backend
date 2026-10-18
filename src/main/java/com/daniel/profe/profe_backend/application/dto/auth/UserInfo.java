@@ -14,4 +14,7 @@ public class UserInfo {
     private String username;
     private String email;
     private UserRole role;
+
+    /** URL de la foto de perfil (Cloudinary) o {@code null} si el usuario no tiene foto. */
+    private String photo;
 }

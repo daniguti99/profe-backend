@@ -38,6 +38,4 @@ public class RegisterRequest {
     @NotBlank(message = "Rellene la localidad")
     private String locality;
 
-    //private String photo;
-
 }

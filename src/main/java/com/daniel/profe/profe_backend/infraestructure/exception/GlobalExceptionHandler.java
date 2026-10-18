@@ -11,6 +11,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import com.daniel.profe.profe_backend.application.dto.error.ErrorResponse;
 
@@ -101,6 +102,34 @@ public class GlobalExceptionHandler {
                                 .timestamp(LocalDateTime.now())
                                 .status(HttpStatus.BAD_REQUEST.value())
                                 .error(ex.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(PhotoStorageException.class)
+    public ResponseEntity<ErrorResponse> handlePhotoStorage(
+            PhotoStorageException ex) {
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(
+                        ErrorResponse.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.BAD_GATEWAY.value())
+                                .error("No se pudo guardar la foto de perfil en el almacenamiento externo. Inténtelo de nuevo")
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceeded(
+            MaxUploadSizeExceededException ex) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.BAD_REQUEST.value())
+                                .error("La foto de perfil no puede superar 2 MB")
                                 .build()
                 );
     }

@@ -39,6 +39,7 @@ public class LoginService implements LoginUseCase {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .photo(user.getPhoto())
                 .build();
 
         return LoginResponse.builder()

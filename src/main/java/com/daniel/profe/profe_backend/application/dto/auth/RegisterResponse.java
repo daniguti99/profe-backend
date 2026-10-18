@@ -13,5 +13,6 @@ public class RegisterResponse {
     private String username;
     private String email;
     private UserRole role;
+    private String photo;
     private String message;
 }
