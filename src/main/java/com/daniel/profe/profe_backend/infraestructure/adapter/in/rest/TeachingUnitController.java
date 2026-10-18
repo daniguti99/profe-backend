@@ -12,6 +12,9 @@ import com.daniel.profe.profe_backend.domain.port.in.CreateTeachingUnitUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.DeleteTeachingUnitUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.GetTeachingUnitsUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.UpdateTeachingUnitUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -55,6 +58,8 @@ import java.util.List;
  * de modo que ni el dominio ni la capa de aplicación dependen del framework de seguridad.
  */
 @RestController
+@Tag(name = "Unidades didácticas", description = "Gestión de unidades didácticas del docente autenticado.")
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("api/teaching-units")
 @RequiredArgsConstructor
 public class TeachingUnitController {
@@ -76,6 +81,7 @@ public class TeachingUnitController {
      * @return 200 con la envoltura {@code TeachingUnitListResponseDTO}: con la lista y el mensaje
      *         de unidades encontradas, o con lista vacía y el mensaje de unidades no encontradas
      */
+    @Operation(summary = "Lista las unidades didácticas del docente autenticado")
     @GetMapping
     public ResponseEntity<TeachingUnitListResponseDTO> getMisTeachingUnits(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
@@ -97,6 +103,7 @@ public class TeachingUnitController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 201 con la unidad creada
      */
+    @Operation(summary = "Crea una unidad didáctica")
     @PostMapping
     public ResponseEntity<CreateTeachingUnitResponse> createTeachingUnit(
             @Valid @RequestBody CreateTeachingUnitRequest request,
@@ -119,6 +126,7 @@ public class TeachingUnitController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 200 con la unidad actualizada
      */
+    @Operation(summary = "Actualiza parcialmente una unidad didáctica")
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateTeachingUnitResponse> updateTeachingUnit(
             @PathVariable Integer id,
@@ -142,6 +150,7 @@ public class TeachingUnitController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 200 con la unidad eliminada
      */
+    @Operation(summary = "Elimina (soft delete) una unidad didáctica (y sus sesiones activas)")
     @DeleteMapping("/{id}")
     public ResponseEntity<DeleteTeachingUnitResponse> deleteTeachingUnit(
             @PathVariable Integer id,

@@ -1,6 +1,7 @@
 package com.daniel.profe.profe_backend.infraestructure.adapter.in.rest;
 
 import com.daniel.profe.profe_backend.application.dto.error.ErrorResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,12 @@ import java.util.Map;
  * contenedor reenvíe internamente a {@code /error} se responde con el
  * formato {@link ErrorResponse} del resto de la API, en lugar del
  * formato por defecto de Spring Boot.
+ *
+ * <p>Está oculto de la Swagger UI con {@code @Hidden}: es un manejador interno del contenedor al
+ * que Spring reenvía los errores, no un endpoint al que un cliente deba llamar, y sin ocultarlo
+ * generaría una operación por cada método HTTP sobre {@code /error}.</p>
  */
+@Hidden
 @RestController
 public class ErrorController implements org.springframework.boot.webmvc.error.ErrorController {
 

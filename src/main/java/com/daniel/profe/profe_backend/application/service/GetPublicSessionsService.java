@@ -1,8 +1,10 @@
 package com.daniel.profe.profe_backend.application.service;
 
 import com.daniel.profe.profe_backend.application.dto.session.AuthorDTO;
+import com.daniel.profe.profe_backend.application.dto.session.PublicSessionPageDTO;
 import com.daniel.profe.profe_backend.application.dto.session.PublicSessionSummaryDTO;
 import com.daniel.profe.profe_backend.domain.model.PublicSession;
+import com.daniel.profe.profe_backend.domain.model.PublicSessionPage;
 import com.daniel.profe.profe_backend.domain.model.PublicSessionSort;
 import com.daniel.profe.profe_backend.domain.port.in.GetPublicSessionsUseCase;
 import com.daniel.profe.profe_backend.domain.port.out.SessionRepositoryPort;
@@ -10,16 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * Caso de uso para obtener el catálogo de sesiones públicas.
  *
- * <p>El servicio es una función pura del criterio de ordenación: no lee el contexto de seguridad,
- * no conoce el transporte y no decide el formato de la respuesta HTTP. Solo orquesta el puerto de
- * salida y traduce de dominio a DTO.</p>
+ * <p>El servicio es una función pura del criterio de ordenación y de la paginación: no lee el
+ * contexto de seguridad, no conoce el transporte y no decide el formato de la respuesta HTTP. Solo
+ * orquesta el puerto de salida y traduce de dominio a DTO, conservando {@code hasMore}.</p>
  *
- * <p>No reordena ni filtra la lista: el orden lo garantiza la consulta (que además exige
+ * <p>No reordena ni filtra la página: el orden lo garantiza la consulta (que además exige
  * {@code publico = true AND activo = true}) y el mapeo secuencial lo conserva.</p>
  */
 @Service
@@ -30,10 +30,15 @@ public class GetPublicSessionsService implements GetPublicSessionsUseCase {
     private final SessionRepositoryPort sessionRepositoryPort;
 
     @Override
-    public List<PublicSessionSummaryDTO> getPublicSessions(PublicSessionSort sort) {
-        return sessionRepositoryPort.findPublicSessions(sort).stream()
-                .map(this::toSummary)
-                .toList();
+    public PublicSessionPageDTO getPublicSessions(PublicSessionSort sort, int page, int size) {
+        PublicSessionPage pagina = sessionRepositoryPort.findPublicSessions(sort, page, size);
+
+        return PublicSessionPageDTO.builder()
+                .sessions(pagina.getSessions().stream()
+                        .map(this::toSummary)
+                        .toList())
+                .hasMore(pagina.isHasMore())
+                .build();
     }
 
     /**

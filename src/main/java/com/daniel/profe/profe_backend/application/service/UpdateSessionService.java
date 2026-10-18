@@ -66,9 +66,6 @@ public class UpdateSessionService implements UpdateSessionUseCase {
         if (request.getWarmUpDescription() != null) {
             session.setWarmUpDescription(request.getWarmUpDescription());
         }
-        if (request.getWarmUpGraphicUrl() != null) {
-            session.setWarmUpGraphicUrl(request.getWarmUpGraphicUrl());
-        }
         if (request.getWarmUpObservations() != null) {
             session.setWarmUpObservations(request.getWarmUpObservations());
         }
@@ -78,9 +75,6 @@ public class UpdateSessionService implements UpdateSessionUseCase {
         if (request.getMainPartDescription() != null) {
             session.setMainPartDescription(request.getMainPartDescription());
         }
-        if (request.getMainPartGraphicUrl() != null) {
-            session.setMainPartGraphicUrl(request.getMainPartGraphicUrl());
-        }
         if (request.getMainPartObservations() != null) {
             session.setMainPartObservations(request.getMainPartObservations());
         }
@@ -89,9 +83,6 @@ public class UpdateSessionService implements UpdateSessionUseCase {
         }
         if (request.getCoolDownDescription() != null) {
             session.setCoolDownDescription(request.getCoolDownDescription());
-        }
-        if (request.getCoolDownGraphicUrl() != null) {
-            session.setCoolDownGraphicUrl(request.getCoolDownGraphicUrl());
         }
         if (request.getCoolDownObservations() != null) {
             session.setCoolDownObservations(request.getCoolDownObservations());
@@ -112,15 +103,12 @@ public class UpdateSessionService implements UpdateSessionUseCase {
                         .date(saved.getDate())
                         .warmUpTime(saved.getWarmUpTime())
                         .warmUpDescription(saved.getWarmUpDescription())
-                        .warmUpGraphicUrl(saved.getWarmUpGraphicUrl())
                         .warmUpObservations(saved.getWarmUpObservations())
                         .mainPartTime(saved.getMainPartTime())
                         .mainPartDescription(saved.getMainPartDescription())
-                        .mainPartGraphicUrl(saved.getMainPartGraphicUrl())
                         .mainPartObservations(saved.getMainPartObservations())
                         .coolDownTime(saved.getCoolDownTime())
                         .coolDownDescription(saved.getCoolDownDescription())
-                        .coolDownGraphicUrl(saved.getCoolDownGraphicUrl())
                         .coolDownObservations(saved.getCoolDownObservations())
                         .active(saved.getActive())
                         .isPublic(saved.getIsPublic())

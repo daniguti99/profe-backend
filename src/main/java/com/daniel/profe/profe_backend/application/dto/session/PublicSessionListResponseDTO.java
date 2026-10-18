@@ -7,9 +7,10 @@ import java.util.List;
 /**
  * DTO de envoltura de la respuesta del listado de sesiones públicas.
  *
- * <p>Envuelve siempre la lista en un objeto con las claves {@code sessions} y {@code message}, de
+ * <p>Envuelve siempre la página en un objeto con las claves {@code sessions} y {@code message}, de
  * modo que el array plano es estructuralmente imposible: incluso sin resultados, la respuesta sigue
- * siendo un objeto.</p>
+ * siendo un objeto. Añade además los metadatos de paginación {@code page}, {@code size} y
+ * {@code hasMore}, que el cliente usa para pedir la página siguiente (scroll infinito).</p>
  */
 @Getter
 @Setter
@@ -27,25 +28,34 @@ public class PublicSessionListResponseDTO {
     private List<PublicSessionSummaryDTO> sessions;
     private String message;
 
-    /**
-     * Factoría para el caso con sesiones: devuelve la lista recibida, sin reordenar ni copiar, junto
-     * al mensaje de sesiones públicas encontradas.
-     */
-    public static PublicSessionListResponseDTO conSesiones(List<PublicSessionSummaryDTO> sessions) {
-        return PublicSessionListResponseDTO.builder()
-                .sessions(sessions)
-                .message(MENSAJE_CON_SESIONES)
-                .build();
-    }
+    /** Página devuelta (base 0). */
+    private int page;
+
+    /** Tamaño de página aplicado. */
+    private int size;
+
+    /** {@code true} si quedan más sesiones por devolver. */
+    private boolean hasMore;
 
     /**
-     * Factoría para el caso sin sesiones: devuelve una lista vacía (nunca {@code null}) junto al
-     * mensaje de sesiones públicas no encontradas.
+     * Construye la envoltura a partir de la página devuelta por el caso de uso y de los parámetros
+     * de paginación solicitados.
+     *
+     * <p>El mensaje se elige según haya o no sesiones, conservando el comportamiento de la spec
+     * 012. Si la página no trae sesiones, {@code hasMore} se fuerza a {@code false} para no dejar
+     * al cliente pidiendo una página que no existe.</p>
      */
-    public static PublicSessionListResponseDTO sinSesiones() {
+    public static PublicSessionListResponseDTO dePagina(
+            PublicSessionPageDTO pagina, int page, int size) {
+        List<PublicSessionSummaryDTO> sessions =
+                pagina.getSessions() == null ? List.of() : pagina.getSessions();
+
         return PublicSessionListResponseDTO.builder()
-                .sessions(List.of())
-                .message(MENSAJE_SIN_SESIONES)
+                .sessions(sessions)
+                .message(sessions.isEmpty() ? MENSAJE_SIN_SESIONES : MENSAJE_CON_SESIONES)
+                .page(page)
+                .size(size)
+                .hasMore(!sessions.isEmpty() && pagina.isHasMore())
                 .build();
     }
 }

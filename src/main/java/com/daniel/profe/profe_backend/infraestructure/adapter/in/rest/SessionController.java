@@ -15,6 +15,9 @@ import com.daniel.profe.profe_backend.domain.port.in.DeleteSessionUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.GetSessionsUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.UpdateSessionUseCase;
 import com.daniel.profe.profe_backend.domain.port.in.UpdateSessionVisibilityUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,6 +61,8 @@ import java.util.List;
  * seguridad.
  */
 @RestController
+@Tag(name = "Sesiones", description = "Gestión de las sesiones del usuario autenticado.")
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("api/sessions")
 @RequiredArgsConstructor
 public class SessionController {
@@ -80,6 +85,7 @@ public class SessionController {
      * @return 200 con la envoltura {@code SessionListResponseDTO}: con la lista y el mensaje de
      *         sesiones encontradas, o con lista vacía y el mensaje de sesiones no encontradas
      */
+    @Operation(summary = "Lista las sesiones del usuario autenticado")
     @GetMapping
     public ResponseEntity<SessionListResponseDTO> getMisSesiones(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
@@ -101,6 +107,7 @@ public class SessionController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 201 con la sesión creada
      */
+    @Operation(summary = "Crea una sesión")
     @PostMapping
     public ResponseEntity<CreateSessionResponse> createSession(@Valid @RequestBody CreateSessionRequest request, Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
@@ -123,6 +130,7 @@ public class SessionController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 200 con la sesión actualizada
      */
+    @Operation(summary = "Actualiza parcialmente una sesión")
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateSessionResponse> updateSession(
             @PathVariable Integer id,
@@ -146,6 +154,7 @@ public class SessionController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 200 con la sesión eliminada
      */
+    @Operation(summary = "Elimina (soft delete) una sesión")
     @DeleteMapping("/{id}")
     public ResponseEntity<DeleteSessionResponse> deleteSession(
             @PathVariable Integer id,
@@ -168,6 +177,7 @@ public class SessionController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 200 con la sesión actualizada y su mensaje
      */
+    @Operation(summary = "Publica o vuelve privada una sesión")
     @PatchMapping("/{id}/visibility")
     public ResponseEntity<UpdateVisibilityResponse> updateVisibility(
             @PathVariable Integer id,

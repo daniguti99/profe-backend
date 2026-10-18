@@ -42,9 +42,6 @@ public class SessionEntity {
     @Column(name = "calentamiento_descripcion")
     private String warmUpDescription;
 
-    @Column(name = "calentamiento_grafica_url")
-    private String warmUpGraphicUrl;
-
     @Column(name = "calentamiento_observaciones")
     private String warmUpObservations;
 
@@ -54,9 +51,6 @@ public class SessionEntity {
     @Column(name = "parte_principal_descripcion")
     private String mainPartDescription;
 
-    @Column(name = "parte_principal_grafica_url")
-    private String mainPartGraphicUrl;
-
     @Column(name = "parte_principal_observaciones")
     private String mainPartObservations;
 
@@ -65,9 +59,6 @@ public class SessionEntity {
 
     @Column(name = "vuelta_calma_descripcion")
     private String coolDownDescription;
-
-    @Column(name = "vuelta_calma_grafica_url")
-    private String coolDownGraphicUrl;
 
     @Column(name = "vuelta_calma_observaciones")
     private String coolDownObservations;

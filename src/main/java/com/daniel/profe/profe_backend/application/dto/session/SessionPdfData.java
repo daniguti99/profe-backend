@@ -14,8 +14,8 @@ import java.util.List;
  * <p>Contiene el contenido didáctico de la sesión (los mismos campos del detalle) más el autor, y
  * las dos listas que resuelve el caso de uso: las secciones con contenido para el índice y los
  * recursos por su descripción. Deja fuera los datos administrativos del panel (estado de
- * publicación, fechas y contadores) y las URLs de las gráficas y de los recursos: el PDF es un
- * documento de trabajo, no carga imágenes ni enlaces y solo escribe texto.</p>
+ * publicación, fechas y contadores) y las URLs de los recursos: el PDF es un documento de trabajo,
+ * no carga imágenes ni enlaces y solo escribe texto.</p>
  */
 @Getter
 @Setter

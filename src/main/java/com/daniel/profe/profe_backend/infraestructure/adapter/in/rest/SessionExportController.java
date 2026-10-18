@@ -3,6 +3,9 @@ package com.daniel.profe.profe_backend.infraestructure.adapter.in.rest;
 import com.daniel.profe.profe_backend.application.dto.session.SessionPdfExport;
 import com.daniel.profe.profe_backend.domain.model.User;
 import com.daniel.profe.profe_backend.domain.port.in.ExportSessionPdfUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +32,8 @@ import java.nio.charset.StandardCharsets;
  * OpenHTMLToPDF: solo recibe los bytes.</p>
  */
 @RestController
+@Tag(name = "Exportación", description = "Exportación de sesiones a PDF.")
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("api/sessions")
 @RequiredArgsConstructor
 public class SessionExportController {
@@ -44,6 +49,7 @@ public class SessionExportController {
      * @param authentication contexto de seguridad dejado por el filtro de JWT
      * @return 200 con el PDF como adjunto
      */
+    @Operation(summary = "Descarga una sesión en PDF", description = "Devuelve application/pdf con Content-Disposition: attachment.")
     @GetMapping("/{id}/export/pdf")
     public ResponseEntity<byte[]> exportPdf(
             @PathVariable Integer id,

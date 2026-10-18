@@ -2,7 +2,8 @@ package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.r
 
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.ResourceEntity;
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.entity.SessionEntity;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -55,13 +56,17 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integ
     List<SessionEntity> findByTeachingUnitId(@Param("teachingUnitId") Integer teachingUnitId);
 
     /**
-     * Devuelve las sesiones públicas y activas de cualquier autor, con el autor ya cargado, en el
-     * orden que indique el {@code Sort} recibido.
+     * Devuelve una página de sesiones públicas y activas de cualquier autor, con el autor ya
+     * cargado, en el orden que indique el {@code Sort} recibido.
      *
      * <p>El {@code JOIN FETCH} interno garantiza que la sesión tiene autor y evita el N+1 al
      * construir la información del autor en el DTO. El {@code Sort} lo construye el adaptador, que
      * traduce el enum de dominio; aquí no se fija ningún {@code ORDER BY} fijo para no chocar con
      * él.</p>
+     *
+     * <p>Devuelve un {@code Slice} y no un {@code Page}: el scroll infinito solo necesita saber si
+     * hay una página más ({@code hasNext()}), y un {@code Slice} lo resuelve pidiendo un elemento
+     * de más sin ejecutar el {@code COUNT} que sí haría un {@code Page}.</p>
      */
     @Query("""
         SELECT s FROM SessionEntity s
@@ -69,7 +74,7 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, Integ
         WHERE s.isPublic = true
         AND s.active = true
         """)
-    List<SessionEntity> findPublicSessions(Sort sort);
+    Slice<SessionEntity> findPublicSessions(Pageable pageable);
 
     /**
      * Devuelve una sesión pública y activa por su identificador, con el autor ya cargado.

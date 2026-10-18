@@ -1,6 +1,7 @@
 package com.daniel.profe.profe_backend.domain.port.out;
 
 import com.daniel.profe.profe_backend.domain.model.PublicSession;
+import com.daniel.profe.profe_backend.domain.model.PublicSessionPage;
 import com.daniel.profe.profe_backend.domain.model.PublicSessionSort;
 import com.daniel.profe.profe_backend.domain.model.Resource;
 import com.daniel.profe.profe_backend.domain.model.Session;
@@ -23,11 +24,11 @@ import java.util.Optional;
  * {@code Session.userId} y de la columna {@code id_usuario}; la conversión desde el {@code Long} del
  * token se realiza en el servicio.</p>
  *
- * <p>Las tres operaciones públicas ({@code findPublicSessions}, {@code findPublicById} y
- * {@code incrementViews}) devuelven {@link PublicSession} porque necesitan, además de los campos de
- * la sesión, los datos básicos del autor. La ordenación se pide con un enum de dominio
- * ({@link PublicSessionSort}); traducirla a una consulta concreta es responsabilidad del
- * adaptador.</p>
+ * <p>Las operaciones públicas de lectura ({@code findPublicSessions} y {@code findPublicById})
+ * devuelven {@link PublicSession} (o una página de ellos, {@link PublicSessionPage}) porque
+ * necesitan, además de los campos de la sesión, los datos básicos del autor. La ordenación se pide
+ * con un enum de dominio ({@link PublicSessionSort}); traducirla a una consulta concreta es
+ * responsabilidad del adaptador.</p>
  */
 public interface SessionRepositoryPort {
     List<Session> findByUserId(Integer userId);
@@ -36,12 +37,15 @@ public interface SessionRepositoryPort {
     Session save(Session session);
 
     /**
-     * Devuelve las sesiones públicas y activas de cualquier autor, en el orden indicado.
+     * Devuelve una página de sesiones públicas y activas de cualquier autor, en el orden indicado.
      *
      * @param sort criterio de ordenación; nunca nulo
-     * @return lista de sesiones públicas con los datos de su autor; vacía si no hay ninguna
+     * @param page página solicitada (base 0); nunca negativa
+     * @param size número de sesiones por página (1..50)
+     * @return página con las sesiones y si quedan más por devolver; sin sesiones si la página está
+     *         más allá del final
      */
-    List<PublicSession> findPublicSessions(PublicSessionSort sort);
+    PublicSessionPage findPublicSessions(PublicSessionSort sort, int page, int size);
 
     /**
      * Devuelve una sesión pública y activa por su identificador, con los datos de su autor.

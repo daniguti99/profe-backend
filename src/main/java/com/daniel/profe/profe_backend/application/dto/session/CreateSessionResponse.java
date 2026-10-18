@@ -21,15 +21,12 @@ public class CreateSessionResponse {
     private LocalDate date;
     private String warmUpTime;
     private String warmUpDescription;
-    private String warmUpGraphicUrl;
     private String warmUpObservations;
     private String mainPartTime;
     private String mainPartDescription;
-    private String mainPartGraphicUrl;
     private String mainPartObservations;
     private String coolDownTime;
     private String coolDownDescription;
-    private String coolDownGraphicUrl;
     private String coolDownObservations;
 
     private Boolean active;

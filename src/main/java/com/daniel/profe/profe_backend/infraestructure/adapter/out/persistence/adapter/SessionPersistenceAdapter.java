@@ -1,6 +1,7 @@
 package com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.adapter;
 
 import com.daniel.profe.profe_backend.domain.model.PublicSession;
+import com.daniel.profe.profe_backend.domain.model.PublicSessionPage;
 import com.daniel.profe.profe_backend.domain.model.PublicSessionSort;
 import com.daniel.profe.profe_backend.domain.model.Resource;
 import com.daniel.profe.profe_backend.domain.model.Session;
@@ -10,6 +11,8 @@ import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.en
 import com.daniel.profe.profe_backend.infraestructure.adapter.out.persistence.repository.SessionJpaRepository;
 import com.daniel.profe.profe_backend.infraestructure.mapper.SessionMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
@@ -70,10 +73,16 @@ public class SessionPersistenceAdapter implements SessionRepositoryPort {
     }
 
     @Override
-    public List<PublicSession> findPublicSessions(PublicSessionSort sort) {
-        return repository.findPublicSessions(toSort(sort)).stream()
-                .map(sessionMapper::toPublicDomain)
-                .toList();
+    public PublicSessionPage findPublicSessions(PublicSessionSort sort, int page, int size) {
+        Slice<SessionEntity> slice = repository.findPublicSessions(
+                PageRequest.of(page, size, toSort(sort)));
+
+        return PublicSessionPage.builder()
+                .sessions(slice.getContent().stream()
+                        .map(sessionMapper::toPublicDomain)
+                        .toList())
+                .hasMore(slice.hasNext())
+                .build();
     }
 
     @Override

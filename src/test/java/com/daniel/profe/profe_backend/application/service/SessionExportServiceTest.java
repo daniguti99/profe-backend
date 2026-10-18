@@ -61,8 +61,12 @@ class SessionExportServiceTest {
         }
 
         @Override
-        public List<PublicSession> findPublicSessions(PublicSessionSort sort) {
-            return List.of();
+        public com.daniel.profe.profe_backend.domain.model.PublicSessionPage findPublicSessions(
+                PublicSessionSort sort, int page, int size) {
+            return com.daniel.profe.profe_backend.domain.model.PublicSessionPage.builder()
+                    .sessions(List.of())
+                    .hasMore(false)
+                    .build();
         }
 
         @Override

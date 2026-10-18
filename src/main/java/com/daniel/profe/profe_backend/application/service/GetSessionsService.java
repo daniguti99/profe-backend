@@ -49,7 +49,7 @@ public class GetSessionsService implements GetSessionsUseCase {
                 // mapper ya se ejecutó dentro del adapter.
                 .filter(s -> s.getTeachingUnitId() != null && s.getUserId() != null)
                 // Mapeo secuencial (sin parallel()) para preservar el orden que devuelve el SQL.
-                // Se rellenan los 20 campos, incluidos los de texto y los de fecha, que viajan tal
+                // Se rellenan los 17 campos, incluidos los de texto y los de fecha, que viajan tal
                 // cual aunque vengan vacíos o nulos.
                 .map(s -> SessionDTO.builder()
                         .id(s.getId())
@@ -62,15 +62,12 @@ public class GetSessionsService implements GetSessionsUseCase {
                         .date(s.getDate())
                         .warmUpTime(s.getWarmUpTime())
                         .warmUpDescription(s.getWarmUpDescription())
-                        .warmUpGraphicUrl(s.getWarmUpGraphicUrl())
                         .warmUpObservations(s.getWarmUpObservations())
                         .mainPartTime(s.getMainPartTime())
                         .mainPartDescription(s.getMainPartDescription())
-                        .mainPartGraphicUrl(s.getMainPartGraphicUrl())
                         .mainPartObservations(s.getMainPartObservations())
                         .coolDownTime(s.getCoolDownTime())
                         .coolDownDescription(s.getCoolDownDescription())
-                        .coolDownGraphicUrl(s.getCoolDownGraphicUrl())
                         .coolDownObservations(s.getCoolDownObservations())
                         .active(s.getActive())
                         .isPublic(s.getIsPublic())

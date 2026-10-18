@@ -37,8 +37,6 @@ public class CreateSessionRequest {
     @NotBlank(message = "La descripción del calentamiento es obligatoria")
     private String warmUpDescription;
 
-    private String warmUpGraphicUrl;
-
     @NotBlank(message = "Las observaciones del calentamiento son obligatorias")
     private String warmUpObservations;
 
@@ -48,8 +46,6 @@ public class CreateSessionRequest {
     @NotBlank(message = "La descripción de parte principal es obligatoria")
     private String mainPartDescription;
 
-    private String mainPartGraphicUrl;
-
     @NotBlank(message = "Las observaciones de parte principal son obligatorias")
     private String mainPartObservations;
 
@@ -58,8 +54,6 @@ public class CreateSessionRequest {
 
     @NotBlank(message = "La descripción de vuelta a la calma es obligatoria")
     private String coolDownDescription;
-
-    private String coolDownGraphicUrl;
 
     @NotBlank(message = "Las observaciones de vuelta a la calma son obligatorias")
     private String coolDownObservations;

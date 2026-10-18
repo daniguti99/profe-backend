@@ -50,9 +50,12 @@ class GetSessionsServiceTest {
         }
 
         @Override
-        public List<com.daniel.profe.profe_backend.domain.model.PublicSession> findPublicSessions(
-                com.daniel.profe.profe_backend.domain.model.PublicSessionSort sort) {
-            return List.of();
+        public com.daniel.profe.profe_backend.domain.model.PublicSessionPage findPublicSessions(
+                com.daniel.profe.profe_backend.domain.model.PublicSessionSort sort, int page, int size) {
+            return com.daniel.profe.profe_backend.domain.model.PublicSessionPage.builder()
+                    .sessions(List.of())
+                    .hasMore(false)
+                    .build();
         }
 
         @Override
@@ -87,15 +90,12 @@ class GetSessionsServiceTest {
                 .date(LocalDate.of(2026, 3, 12))
                 .warmUpTime("10 min")
                 .warmUpDescription("Trote con cambios de ritmo")
-                .warmUpGraphicUrl("https://cdn.example.com/warm.png")
                 .warmUpObservations("Grupo dispuesto")
                 .mainPartTime("30 min")
                 .mainPartDescription("Circuito en parejas")
-                .mainPartGraphicUrl("https://cdn.example.com/main.png")
                 .mainPartObservations("Dos vueltas")
                 .coolDownTime("10 min")
                 .coolDownDescription("Vuelta a la calma y estiramientos")
-                .coolDownGraphicUrl("https://cdn.example.com/cool.png")
                 .coolDownObservations("Sin incidencias")
                 .build();
     }
@@ -126,7 +126,7 @@ class GetSessionsServiceTest {
     }
 
     @Test
-    void mapeaLos20CamposDeLaSesionAlDto() {
+    void mapeaLos17CamposDeLaSesionAlDto() {
         RepositorioFalso repositorio = new RepositorioFalso();
         Session original = sesionCompleta();
         repositorio.aDevolver = List.of(original);
@@ -144,15 +144,12 @@ class GetSessionsServiceTest {
         assertEquals(original.getDate(), dto.getDate());
         assertEquals(original.getWarmUpTime(), dto.getWarmUpTime());
         assertEquals(original.getWarmUpDescription(), dto.getWarmUpDescription());
-        assertEquals(original.getWarmUpGraphicUrl(), dto.getWarmUpGraphicUrl());
         assertEquals(original.getWarmUpObservations(), dto.getWarmUpObservations());
         assertEquals(original.getMainPartTime(), dto.getMainPartTime());
         assertEquals(original.getMainPartDescription(), dto.getMainPartDescription());
-        assertEquals(original.getMainPartGraphicUrl(), dto.getMainPartGraphicUrl());
         assertEquals(original.getMainPartObservations(), dto.getMainPartObservations());
         assertEquals(original.getCoolDownTime(), dto.getCoolDownTime());
         assertEquals(original.getCoolDownDescription(), dto.getCoolDownDescription());
-        assertEquals(original.getCoolDownGraphicUrl(), dto.getCoolDownGraphicUrl());
         assertEquals(original.getCoolDownObservations(), dto.getCoolDownObservations());
     }
 
